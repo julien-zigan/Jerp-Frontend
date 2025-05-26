@@ -1,0 +1,7 @@
+.upload-card.dragging {
+  background-color: #f0f0f0;
+}
+
+.drag-area.dragging {
+  border: 2px dashed #ffffff;
+}

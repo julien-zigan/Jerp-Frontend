@@ -1,0 +1,12 @@
+.app {
+  background-color: rgb(229, 240, 243);
+}
+
+#root {
+  max-width: 1280px;
+  text-align: center;
+}
+
+#drag-area {
+  border: 2px dashed lightblue;
+}
