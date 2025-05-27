@@ -1,7 +1,6 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useState } from "react";
 import PdfThumbnailFromFile from "./PdfThumbNailFromFile";
+import DragArea from "./DragArea";
 
 export default function FileUploadCard() {
   const [file, setFile] = useState(null);
@@ -11,38 +10,6 @@ export default function FileUploadCard() {
   const inputRef = useRef(null);
   const headerRef = useRef(null);
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-    if (headerRef.current) {
-      headerRef.current.textContent = "Release to Upload";
-    }
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (headerRef.current) {
-      headerRef.current.textContent = "Drag & Drop";
-    }
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (headerRef.current) {
-      headerRef.current.textContent = "Drag & Drop";
-    }
-
-    const droppedFile = e.dataTransfer.files[0];
-    if (!droppedFile || droppedFile.type !== "application/pdf") {
-      alert("Only PDF files are allowed!");
-      return;
-    }
-
-    setFile(droppedFile);
-  };
-
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile && selectedFile.type === "application/pdf") {
@@ -50,10 +17,6 @@ export default function FileUploadCard() {
     } else {
       alert("Only PDF files are allowed!");
     }
-  };
-
-  const handleBrowseClick = () => {
-    inputRef.current?.click();
   };
 
   const handleRemove = () => {
@@ -106,36 +69,13 @@ export default function FileUploadCard() {
       )}
 
       {!file && (
-        <div
-          className={`drag-area btn btn-light fw-bold d-flex flex-column p-3 m-3 rounded align-items-center justify-content-center text-primary ${
-            isDragging ? "dragging" : ""
-          }`}
-          id="drag-area"
-          role="button"
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onClick={handleBrowseClick}
-          tabIndex={0}
-        >
-          <div className="icon" style={{ fontSize: "6rem" }}>
-            <FontAwesomeIcon icon={faFilePdf} />
-          </div>
-          <span
-            ref={headerRef}
-            className={`drop-header mb-3 fs-5 fw-bold ${
-              isDragging ? "text-primary" : "text-secondary"
-            }`}
-          >
-            Drag & Drop or
-          </span>
-          <span
-            className="button btn btn-secondary fs-5 fw-bold"
-            onClick={handleBrowseClick}
-          >
-            browse
-          </span>
-        </div>
+        <DragArea
+          isDragging={isDragging}
+          setIsDragging={setIsDragging}
+          headerRef={headerRef}
+          inputRef={inputRef}
+          setFile={setFile}
+        />
       )}
 
       <input
