@@ -1,6 +1,6 @@
 import "../public/css/App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import FileUploadCard from "./components/FileUploadCard";
+import FileUploadCard from "./components/jobConfirmationUpload/FileUploadCard";
 
 function App() {
   return (

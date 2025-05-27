@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import PdfThumbnailFromFile from "./PdfThumbNailFromFile";
 import DragArea from "./DragArea";
-import UploadButtonGruop from "./UploadButtonGruop";
+import UploadButtonGruop from "./UploadButtonGroup";
 
 export default function FileUploadCard() {
   const [file, setFile] = useState(null);
