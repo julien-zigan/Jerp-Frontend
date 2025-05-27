@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
+
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/js/pdf.worker.min.js";
 
 export default function PdfThumbnailFromFile({ pdfFile }) {
@@ -8,61 +9,57 @@ export default function PdfThumbnailFromFile({ pdfFile }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!pdfFile) return;
-
-    const reader = new FileReader();
-
-    reader.onload = async () => {
-      const typedArray = new Uint8Array(reader.result);
-
-      try {
-        const pdf = await pdfjsLib.getDocument(typedArray).promise;
-        const page = await pdf.getPage(1);
-
-        const viewport = page.getViewport({ scale: 1 });
-        const canvas = canvasRef.current;
-        const context = canvas.getContext("2d");
-
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        // Cancel previous renderTask if any
-        if (renderTaskRef.current) {
-          await renderTaskRef.current.cancel();
-          renderTaskRef.current = null;
-        }
-
-        renderTaskRef.current = page.render({
-          canvasContext: context,
-          viewport: viewport,
-        });
-
-        await renderTaskRef.current.promise;
-        renderTaskRef.current = null;
-
-        setError(null);
-      } catch (err) {
-        if (err?.name === "RenderingCancelledException") {
-          return;
-        }
-        console.error("Error loading PDF page:", err);
-        setError("Failed to load PDF thumbnail");
-      }
-    };
-
-    reader.onerror = () => {
-      setError("Failed to read PDF file");
-    };
-
-    reader.readAsArrayBuffer(pdfFile);
-
+    if (!pdfFile || !canvasRef.current) return;
+    let isMounted = true;
+    loadAndRender(isMounted);
     return () => {
-      if (renderTaskRef.current) {
-        renderTaskRef.current.cancel();
-        renderTaskRef.current = null;
-      }
+      isMounted = false;
+      cancelRenderTask(renderTaskRef);
     };
   }, [pdfFile]);
+
+  const loadAndRender = async (isMounted) => {
+      try {
+        await renderPdfToCanvas(
+          pdfFile,
+          canvasRef.current,
+          renderTaskRef,
+          setError
+        );
+        if (isMounted) setError(null);
+      } catch (err) {
+        if (err?.name === "RenderingCancelledException") return;
+        console.error("Error loading PDF page:", err);
+        if (isMounted) setError("Failed to load PDF thumbnail");
+      }
+    };
+
+  const renderPdfToCanvas = async (file, canvas) => {
+    const typedArray = new Uint8Array(await file.arrayBuffer());
+    const pdf = await pdfjsLib.getDocument(typedArray).promise;
+    const page = await pdf.getPage(1);
+    const viewport = page.getViewport({ scale: 1 });
+
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const context = canvas.getContext("2d");
+
+    if (renderTaskRef.current) {
+      await renderTaskRef.current.cancel();
+      renderTaskRef.current = null;
+    }
+
+    renderTaskRef.current = page.render({ canvasContext: context, viewport });
+    await renderTaskRef.current.promise;
+    renderTaskRef.current = null;
+  };
+
+  const cancelRenderTask = (renderTaskRef) => {
+    if (renderTaskRef.current) {
+      renderTaskRef.current.cancel();
+      renderTaskRef.current = null;
+    }
+  };
 
   if (error) {
     return <div className="text-danger">{error}</div>;
