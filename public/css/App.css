@@ -1,0 +1,23 @@
+.app {
+  background-color: rgb(229, 240, 243);
+}
+
+.upload-card.dragging {
+  background-color: #f0f0f0;
+}
+
+.drag-area.dragging {
+  border: 2px dashed #ffffff;
+}
+
+#root {
+  max-width: 1280px;
+  text-align: center;
+}
+
+#drag-area {
+  border: 2px dashed lightblue;
+}
+
+
+
