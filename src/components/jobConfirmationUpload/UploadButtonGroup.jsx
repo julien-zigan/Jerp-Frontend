@@ -2,7 +2,8 @@ export default function UploadButtonGruop({
   handleRemove,
   isUploaded,
   setIsUploaded,
-  file
+  file,
+  onUploadSuccess,
 }) {
   const handleUpload = async () => {
     const formData = new FormData();
@@ -17,9 +18,17 @@ export default function UploadButtonGruop({
         }
       );
 
-      const result = await response.text();
-      console.log(result);
+      if (!response.ok) throw new Error("Upload failed");
+
+      const locationHeader = response.headers.get("Location"); // <- Access the header
+
+      if (!locationHeader) {
+        throw new Error("No Location header found in response");
+      }
+
+      onUploadSuccess(locationHeader);
       setIsUploaded(true);
+
     } catch (error) {
       console.error("Error uploading file:", error);
       setIsUploaded(false);

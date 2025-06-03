@@ -3,7 +3,7 @@ import PdfThumbnailFromFile from "./PdfThumbNailFromFile";
 import DragArea from "./DragArea";
 import UploadButtonGruop from "./UploadButtonGroup";
 
-export default function FileUploadCard() {
+export default function FileUploadCard({onUploadSuccess}) {
   const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
@@ -80,6 +80,7 @@ export default function FileUploadCard() {
           isUploaded={isUploaded}
           setIsUploaded={setIsUploaded}
           file={file}
+          onUploadSuccess={onUploadSuccess}
         />
       )}
     </div>
