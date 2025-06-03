@@ -1,5 +1,9 @@
-.app {
+html, .app {
   background-color: rgb(229, 240, 243);
+}
+
+.app {
+  
 }
 
 .upload-card.dragging {
