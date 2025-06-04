@@ -1,3 +1,5 @@
+import { use } from "react";
+
 export default function UploadButtonGruop({
   handleRemove,
   isUploaded,
@@ -14,7 +16,7 @@ export default function UploadButtonGruop({
         "http://localhost:8080/api/jobconfirmations/upload",
         {
           method: "POST",
-          body: formData,
+          body: formData
         }
       );
 

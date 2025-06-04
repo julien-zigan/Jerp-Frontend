@@ -1,23 +1,21 @@
 import "../public/css/App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
-import { useState } from "react";
-import FileUploadCard from "./components/jobConfirmationUpload/FileUploadCard";
-import JobConfirmationDataCard from "./components/jobConfirmationData/JobConfirmationDataCard";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import MainContent from "./pages/MainContent";
 
 function App() {
-  const [dataUrl, setDataUrl] = useState(null);
-
-  return (
-    <div
-      className="app d-flex justify-content-center 
-                    align-items-center text-center vh-100 vw-100"
-    >
-      <div className="row d-flex justify-content-center align-items-stretch gap-4 p-4">
-        <FileUploadCard className="" onUploadSuccess={setDataUrl} />
-        {dataUrl && <JobConfirmationDataCard className="" url={dataUrl} />}
-      </div>
-    </div>
+ return (
+    <Router>
+      <Routes>
+        <Route path="/api/register" element={<Register />} />
+        <Route path="/api/login" element={<Login />} />
+        <Route path="*" element={<MainContent />} />
+      </Routes>
+    </Router>
   );
 }
 
